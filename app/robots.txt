@@ -1,0 +1,15 @@
+// app/robots.txt/route.js
+export async function GET() {
+  const body = `
+User-agent: *
+Allow: /
+
+Sitemap: https://kickprints.netlify.app/sitemap.xml
+  `.trim();
+
+  return new Response(body, {
+    headers: {
+      'Content-Type': 'text/plain',
+    },
+  });
+}

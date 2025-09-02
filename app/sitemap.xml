@@ -1,0 +1,40 @@
+// app/sitemap.xml/route.js
+
+import { useProductContext } from "@/context.js/ProductContext";  // Or wherever your fetch logic is
+
+export async function GET() {
+  const {products} = await useProductContext(); // Replace with your actual data fetching logic
+
+  const baseUrl ='https://kickprints.netlify.app/';
+
+  const staticRoutes = [
+    '',
+    'about',
+    'shop',
+    'cart',
+    'search',
+  ];
+
+  const productRoutes = products.map((p) => `shop/${p.slug}`);
+
+  const allRoutes = [...staticRoutes, ...productRoutes];
+
+  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+  ${allRoutes
+    .map(
+      (route) => `
+    <url>
+      <loc>${baseUrl}/${route}</loc>
+    </url>
+  `
+    )
+    .join('')}
+</urlset>`;
+
+  return new Response(sitemap, {
+    headers: {
+      'Content-Type': 'application/xml',
+    },
+  });
+}
