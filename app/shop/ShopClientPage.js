@@ -38,8 +38,8 @@ export default function ShopPage() {
   const onSaleQuery = searchParams.get('onSale');
   const sortByQuery = searchParams.get('sortBy');
 
-  // Sync from URL
   useEffect(() => {
+    // Sync from URL
     if (categories.length === 0) return;
 
     if (categoryQuery) {
@@ -134,10 +134,20 @@ export default function ShopPage() {
         {filterCategories.map((cat) => (
           <button
             key={cat.id}
-            onClick={() => setSelectedCategory(cat)}
+            onClick={() => {
+              if (selectedCategory.id === cat.id) return; // no change
+              const query = new URLSearchParams(searchParams.toString());
+              if (cat.id === 'all') {
+                query.delete('category');
+              } else {
+                query.set('category', cat.name.toLowerCase());
+              }
+              router.replace(`?${query.toString()}`, { shallow: true });
+            }}
+
             className={`px-4 py-2 text-sm rounded-full transition whitespace-nowrap shadow-sm border ${selectedCategory.id === cat.id
-                ? 'bg-indigo-600 text-white'
-                : 'bg-white border-gray-300 text-gray-700 hover:bg-indigo-50'
+              ? 'bg-indigo-600 text-white'
+              : 'bg-white border-gray-300 text-gray-700 hover:bg-indigo-50'
               } hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400`}
           >
             {cat.name}
@@ -164,8 +174,8 @@ export default function ShopPage() {
         <button
           onClick={() => setOnSale((prev) => !prev)}
           className={`px-4 py-2 text-sm rounded-md border transition focus:outline-none focus:ring-2 focus:ring-indigo-400 ${onSale
-              ? 'bg-indigo-600 text-white hover:bg-indigo-700 border-transparent'
-              : 'bg-white text-gray-800 border-gray-300 hover:bg-indigo-50'
+            ? 'bg-indigo-600 text-white hover:bg-indigo-700 border-transparent'
+            : 'bg-white text-gray-800 border-gray-300 hover:bg-indigo-50'
             }`}
         >
           🔥 On Sale
